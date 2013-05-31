@@ -1,10 +1,21 @@
+async = require 'async'
+
 serialport = require 'serialport'
 SerialPort = serialport.SerialPort
 
-serialPort = new SerialPort '/dev/ttyUSB0',
+
+
+
+rfidReader = new SerialPort '/dev/ttyUSB0',
 	parser: serialport.parsers.readline '\n'
 
+display = new SerialPort '/dev/ttyO2'
 
-serialPort.open ->
-	serialPort.on 'data', (data) ->
-		console.log data
+
+async.parallel [ rfidReader.open, display.open ], (err) ->
+	rfidReader.on 'data', (data) ->
+		display.write '\r\n' + data
+
+
+	
+
