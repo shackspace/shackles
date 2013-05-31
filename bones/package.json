@@ -10,6 +10,7 @@
   "author": "shackspace",
   "license": "BSD",
   "dependencies": {
-    "serialport": "~1.1.0"
+    "serialport": "~1.1.0",
+    "async": "~0.2.9"
   }
 }
