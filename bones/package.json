@@ -1,0 +1,15 @@
+{
+  "name": "shackles-bones",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "cake test"
+  },
+  "repository": "",
+  "author": "shackspace",
+  "license": "BSD",
+  "dependencies": {
+    "serialport": "~1.1.0"
+  }
+}
