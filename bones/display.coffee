@@ -1,13 +1,14 @@
 {SerialPort} = require 'serialport'
-displaySize = 39
-text = 'SHACKles SHACKles SHACKles SHACKles'
+displaySize = 40
+text = 'mimimimimimimimimimi'
 run = 1
 runText = ''
 display = new SerialPort '/dev/ttyO2'
 
 printStuff = ->
+
     if run <= text.length
-        display.write '\r\n' + text[-run..]
+        display.write '\r' + text[-run..]
     else if run <= displaySize 
         display.write Array(text.length+1).join('\b') + ' ' + text
     else if run isnt displaySize+text.length
@@ -19,7 +20,19 @@ printStuff = ->
     run %= displaySize + text.length    
     run++
 
+printLoop = ->
+    trailingSpaces = run - text.length
+    
+    if trailingSpaces < 0
+        trailingSpaces = 0
+
+    runText = 
+
+    
+
 
 display.open ->
     display.write '\r\n'
-    setInterval printStuff, 50
+#    setInterval printStuff,50
+    display.write Array(41).join('a')
+    display.write Array(41).join('b')

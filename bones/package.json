@@ -11,6 +11,7 @@
   "license": "BSD",
   "dependencies": {
     "serialport": "~1.1.0",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "underscore": "~1.4.4"
   }
 }
