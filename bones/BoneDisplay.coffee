@@ -8,34 +8,34 @@ module.exports = class BoneDisplay extends EventEmitter
     constructor: (@path, options) -> 
         
         throw new Error 'Path to display undefined' if not @path?
-        
-        options = {} if not options?
 
         _.defaults options, 
             speed: 150
             displaySize: 40
 
+        options = {} if not options?
+
+        @displaySize = options.displaySize 
         @speed = options.speed
         throw new Error 'Speed is not numerical' if typeof @speed isnt 'number'
 
-        @displaySize = options.displaySize 
-
         @display = new SerialPort @path
 
-
+        #EventEmitter magic
         @display.open =>
             @emit 'ready'
 
 
-
+    # entry point for all printouts
     displayText: (text, options) =>
 
-        options = {} if not options?
+        throw new Error 'no text defined' if not text?
+
         _.defaults options,
             startingPoint: 'start'
             direction: 'rtl'
 
-        throw new Error 'no text defined' if not text?
+        options = {} if not options?
 
         run = 1
 
