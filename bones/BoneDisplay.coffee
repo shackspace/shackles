@@ -5,15 +5,16 @@ _ = require 'underscore'
 
 module.exports = class BoneDisplay extends EventEmitter
     
-    constructor: (@path, options) -> 
-        
-        throw new Error 'Path to display undefined' if not @path?
+    constructor: (@path, options) ->
+
+        throw new Error 'Path to display undefined' if not @path? 
+ 
+        options = {} if not options?       
 
         _.defaults options, 
             speed: 150
             displaySize: 40
 
-        options = {} if not options?
 
         @displaySize = options.displaySize 
         @speed = options.speed
@@ -31,11 +32,11 @@ module.exports = class BoneDisplay extends EventEmitter
 
         throw new Error 'no text defined' if not text?
 
+        options = {} if not options?
+ 
         _.defaults options,
             startingPoint: 'start'
             direction: 'rtl'
-
-        options = {} if not options?
 
         run = 1
 
