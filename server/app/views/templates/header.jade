@@ -1,0 +1,16 @@
+.navbar-inner
+	.container
+		a.brand(href="#") creatask
+		.btn-group.pull-right
+			a.btn.dropdown-toggle(data-toggle="dropdown",href="#")
+				i.icon-user
+				|  Username
+				span.caret
+			ul.dropdown-menu
+				li: a(href="#") Profile
+				li.divider
+				li: a(href="#") Sign Out
+		.nav-collapse
+			ul.nav
+				for item in items
+					li: a(href=item.href)= item.title
