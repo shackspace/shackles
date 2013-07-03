@@ -28,17 +28,30 @@ module.exports = class BoneDisplay extends EventEmitter
 
 
     # entry point for all printouts
+    # options include:
+    #   startingPoing: start or end
+    #   direction: rtl, ltr or none
+    #   finished: callback
     displayText: (text, options) =>
 
         throw new Error 'no text defined' if not text?
 
         options = {} if not options?
- 
         _.defaults options,
             startingPoint: 'start'
             direction: 'rtl'
+            finished: ''
 
         run = 1
+
+        if startingPoint is 'end' and (direction is 'none' or direction is 'ltr')
+            #hm, korrigieren oder einfach beenden?
+            throw new Error "you're holding it wrong"
+
+        if startingPoint is 'start' and direction is 'none' and test.length > 40
+            #auch hier: korrigieren? beenden?
+            throw new Error "you're holding it wrong"
+
 
         printStuff = =>
 
