@@ -1,11 +1,11 @@
 module.exports = class Crud
 
 	constructor: (app) ->
-		app.get "/admin/api/#{@prefix}", @list
-		app.post "/admin/api/#{@prefix}", @add
-		app.get "/admin/api/#{@prefix}/:id", @item
-		app.put "/admin/api/#{@prefix}/:id", @update
-		app.delete "/admin/api/#{@prefix}/:id", @delete
+		app.get "/api/#{@prefix}", @list
+		app.post "/api/#{@prefix}", @add
+		app.get "/api/#{@prefix}/:id", @item
+		app.put "/api/#{@prefix}/:id", @update
+		app.delete "/api/#{@prefix}/:id", @delete
 
 
 	list: (req, res) =>
@@ -22,7 +22,10 @@ module.exports = class Crud
 	item: (req, res) =>
 		@model.findById req.params.id, (err, item) ->
 			console.log err if err?
-			res.json item
+			if item?
+				res.json item
+			else
+				res.json 404, null
 
 	delete: (req, res) =>
 		@model.remove {_id: req.params.id}, (err) ->

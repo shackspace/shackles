@@ -32,6 +32,8 @@
   "devDependencies": {
     "chai": "1.7.2",
     "sinon": "1.7.3",
-    "sinon-chai": "2.4.0"
+    "sinon-chai": "2.4.0",
+    "request": "~2.25.0",
+    "async": "~0.2.9"
   }
 }

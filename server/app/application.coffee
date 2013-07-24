@@ -12,30 +12,30 @@ require 'lib/iosync'
 module.exports = class Application extends Chaplin.Application
 	# Set your application name here so the document title is set to
 	# “Controller title – Site title” (see Layout#adjustTitle)
-	title: 'Brunch example application'
+	title: 'shackles'
 	serverUrl: location.protocol + "//" + location.host
 
-	initialize: ->
+	# initialize: ->
 
-		# Initialize core components
-		@initDispatcher()
-		@initLayout()
-		@initMediator()
+	# 	# Initialize core components
+	# 	@initDispatcher()
+	# 	@initLayout()
+	# 	@initMediator()
 
-		@router = new Router()
+	# 	@router = new Router()
 
-		mediator.subscribe '!auth:success', =>
-			@initControllers()
-			# register routes late
-			routes @router.match
-			@router.startHistory()
-			#mediator.publish '!router:route', ''
+	# 	mediator.subscribe '!auth:success', =>
+	# 		@initControllers()
+	# 		# register routes late
+	# 		routes @router.match
+	# 		@router.startHistory()
+	# 		#mediator.publish '!router:route', ''
 
-		@initSocket ->
-			auth = new AuthenticationController()
+	# 	# @initSocket ->
+	# 	# 	auth = new AuthenticationController()
 
-		# Freeze the application instance to prevent further changes
-		Object.freeze? this
+	# 	# Freeze the application instance to prevent further changes
+	# 	Object.freeze? this
 
 	# Override standard layout initializer
 	# ------------------------------------
