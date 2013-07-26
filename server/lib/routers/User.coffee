@@ -11,26 +11,29 @@ module.exports = class UserRouter extends Crud
 		super app
 
 		app.get "/api/id/:id", @getId
-		app.get "/api/id/:id/login", @login
-		app.get "/api/id/:id/logout", @logout
+		app.get "/api/user/:id/login", @login
+		app.get "/api/user/:id/logout", @logout
 
 	# resolve rfid to user
 	getId: (req, res) =>
-		@model.findOne {rfids: req.params.id}, (err, item) ->
+		@model.findOne {rfids: req.params.id}, {activity: {$slice: -1}}, (err, item) ->
 			if item?
 				res.json item
 			else
 				res.json 404, null
 
 	login: (req, res) =>
-		@model.findOne {rfids: req.params.id}, (err, item) ->
-			if item?
-				item.activities.push
-					action: 'login'
-				res.json 200, item
+		@model.update {_id: req.params.id}, {$push :{activity: {date: Date.now(), action: 'login'}}}, (err, numAffected) ->
+			if numAffected is 1
+				res.send 200
 			else
-				res.json 404, null
+				res.send 404
 
 
 
 	logout: (req, res) =>
+		@model.update {_id: req.params.id}, {$push :{activity: {date: Date.now(), action: 'logout'}}}, (err, numAffected) ->
+			if numAffected is 1
+				res.send 200
+			else
+				res.send 404

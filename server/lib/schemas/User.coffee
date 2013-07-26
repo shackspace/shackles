@@ -10,6 +10,6 @@ Activity = new Schema
 schema = new Schema
 	_id: String
 	rfids: [String]
-	activities: [Activity]
+	activity: [Activity]
 
 module.exports = schema

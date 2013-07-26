@@ -99,25 +99,36 @@ describe 'Server', ->
 
 	it 'should login with rfid', (done) ->
 		req = request
-			url: host + '/api/id/BEEF/login'
+			url: host + '/api/user/rash/login'
 			method: 'GET'
-			json: true
 		, (error, response, body) ->
 			done error if error?
 			response.statusCode.should.equal 200
-			body._id.should.equal 'rash'
-			body.rfids.should.include.members ['BEEF']
-			body.activities.length.should.equal 1
-			body.activities[0].action.should.equal 'login'
 			done()
 
-	it 'should 404 on login', (done) ->
+	it 'should 404 on wrong login', (done) ->
 		req = request
-			url: host + '/api/id/B00B1E5/login'
+			url: host + '/api/user/krebs/login'
 			method: 'GET'
-			json: true
 		, (error, response, body) ->
 			done error if error?
 			response.statusCode.should.equal 404
-			should.not.exist body
+			done()
+
+	it 'should logout with rfid', (done) ->
+		req1 = request
+			url: host + '/api/user/rash/logout'
+			method: 'GET'
+		, (error, response, body) ->
+			done error if error?
+			response.statusCode.should.equal 200
+			done()
+
+	it 'should 404 on wrong logout', (done) ->
+		req = request
+			url: host + '/api/user/krebs/logout'
+			method: 'GET'
+		, (error, response, body) ->
+			done error if error?
+			response.statusCode.should.equal 404
 			done()
