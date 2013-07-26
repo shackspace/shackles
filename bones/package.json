@@ -12,6 +12,7 @@
   "dependencies": {
     "serialport": "~1.1.0",
     "async": "~0.2.9",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "request": "~2.25.0"
   }
 }
