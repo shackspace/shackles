@@ -1,0 +1,15 @@
+include mixins/form_helpers
+
+
+h1 Registration
+
+form.form-horizontal.row-fluid
+	mixin textfield({name: 'username', label: 'Username'})
+	mixin textfield({name: 'rfid', label: 'RFID'})
+	.control-group
+		.controls
+			button.btn.btn-primary.btn-large.btn-block.span8(type='submit', style='margin-left: 0') Register
+
+.row-fluid
+	h5 last unregistered accesses:
+	#unassigned

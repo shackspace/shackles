@@ -1,8 +1,81 @@
-mixin textfield(name, value, label, disabled)
-	.control-group
-		label.control-label(for=name)= label
+mixin textfield(options)
+	.control-group(id=options.name + '_controlgroup')
+		label.control-label(for=options.name)= options.label
 		.controls
-			if(disabled)
-				input.input-xlarge.disabled(type='text', name=name, value=value, disabled)
+			- var classArr = [];
+			if options.size
+				- classArr.push(options.size);
 			else
-				input.input-xlarge(type='text', name=name, value=value)
+				- classArr.push('span8');
+			if options.disabled
+				- classArr.push('disabled');
+			input(class=classArr, type='text', name=options.name, id=options.name, value=options.value, placeholder=options.placeholder || options.label, list=options.list)
+			if options.addon
+				span.add-on(class=options.addon)
+
+mixin datefield(options)
+	.control-group
+		label.control-label(for=options.name)= options.label
+		.controls
+			- var classArr = [];
+			if options.size
+				- classArr.push(options.size);
+			else
+				- classArr.push('span8');
+			if options.disabled
+				- classArr.push('disabled');
+			input(class=classArr, type='text', name=options.name, id=options.name, value=options.value, placeholder=options.placeholder || options.label, list=options.list, title='Datum im Format JJJJ-MM-DD oder DD. MM. JJJJ (mit oder ohne Punkte)')
+
+mixin textarea(options)
+	.control-group
+		label.control-label(for=options.name)= options.label
+		.controls
+			- var numRows = 3;
+			if options.value && options.value.split
+			- 	numRows = Math.max(2, options.value.split('\n', 5).length);
+
+			- var classArr = [];
+			if options.size
+				- classArr.push(options.size);
+			else
+				- classArr.push('span8');
+			if options.disabled
+				- classArr.push('disabled');
+			textarea(class=classArr, name=options.name, id=options.name, rows=numRows, placeholder=options.placeholder || options.label)= options.value
+
+mixin select(options)
+	label.control-label(for=options.name)= options.label
+	.control-group
+		.controls
+			select(name=options.name)
+				for value, key in options.values
+					option(value=key, selected=key==options.selected)= value
+
+mixin select_inline(options)
+	select(name=options.name)
+		for value,key in options.values
+			option(value=key, selected=key==options.selected)= value
+
+mixin checkbox(options)
+	.control-group
+		label.control-label(for=options.name)= options.label
+		.controls
+			.input-append
+				if options.value
+					input(name=options.name, id=options.name, type='checkbox', checked='checked')
+				else
+					input(name=options.name, id=options.name, type='checkbox')
+
+mixin radiogroup(options)
+	.control-group
+		label.control-label(for=options.name)= options.label
+		.controls
+			.input-append
+				for value in options.values
+					label.radio
+						- var buttonId = options.name + '_' + value.id
+						if(value.id == options.value)
+							input(name=options.name, type='radio', id=buttonId, checked='checked')
+						else
+							input(name=options.name, type='radio', id=buttonId)
+						= value.label

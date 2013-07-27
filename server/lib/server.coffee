@@ -14,6 +14,7 @@ mongoose.connect 'mongodb://localhost/shackles'
 global.mongoose = mongoose
 
 User = mongoose.model 'User', require('./schemas/User'), 'users'
+Unassigned = mongoose.model 'Unassigned', require('./schemas/Unassigned'), 'unassigned'
 
 # Server config
 
@@ -22,7 +23,7 @@ app.configure ->
 	app.use express.methodOverride()
 	app.use express.cookieParser 'ponies'
 	app.use express.session()
-	# app.use log4js.connectLogger log4js.getLogger 'my-project-access'
+	app.use log4js.connectLogger log4js.getLogger 'access'
 	app.use express.static __dirname + '/../public'
 	app.use app.router
 
@@ -33,6 +34,7 @@ app.configure 'production', ->
 	app.use express.errorHandler()
 
 new (require('./routers/User')) app
+new (require('./routers/Unassigned')) app
 
 # # cheap user list
 # users =

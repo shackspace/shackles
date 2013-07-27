@@ -1,0 +1,40 @@
+/*
+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+    /* identification */
+    part-number = "uart3pinmux";
+
+    fragment@0 {
+        target = <&am33xx_pinmux>;
+        __overlay__ {
+            uart3pinmux: uart3pinmux_pins {
+                pinctrl-single,pins = <
+                    0x150 0x21  /* UART2_RXD muxRegOffset, INPUT | MODE0 */
+                    0x154 0x01  /* UART2_TXD muxRegOffset, OUTPUT | MODE0 */
+                >;
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&ocp>;
+        __overlay__ {
+            test_helper: helper {
+                compatible = "bone-pinmux-helper";
+                pinctrl-names = "default";
+                pinctrl-0 = <&uart3pinmux>;
+                status = "okay";
+            };
+        };
+    };
+};
