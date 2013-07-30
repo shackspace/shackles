@@ -12,6 +12,10 @@ host = 'http://localhost:9000'
 formtype = null
 server = null
 
+crypto = require 'crypto'
+
+hash = (text) -> crypto.createHash('md5').update(text).digest 'hex'
+
 describe 'Server', ->
 
 	after (done) ->
@@ -42,13 +46,11 @@ describe 'Server', ->
 			url: host + '/api/user'
 			method: 'POST'
 			json:
-				_id: 'rash'
-				rfids: ['BEEF']
+				username: 'rash'
+				rfid: 'BEEF'
 		, (error, response, body) ->
 			done error if error?
 			response.statusCode.should.equal 200
-			body._id.should.equal 'rash'
-			body.rfids.should.include.members ['BEEF']
 			done()
 
 	it 'should get user info by user id', (done) ->
@@ -60,7 +62,7 @@ describe 'Server', ->
 			done error if error?
 			response.statusCode.should.equal 200
 			body._id.should.equal 'rash'
-			body.rfids.should.include.members ['BEEF']
+			body.rfids.should.include.members [hash 'BEEF']
 			done()
 
 	it 'should 404 if user id does not exist', (done) ->
@@ -83,7 +85,7 @@ describe 'Server', ->
 			done error if error?
 			response.statusCode.should.equal 200
 			body._id.should.equal 'rash'
-			body.rfids.should.include.members ['BEEF']
+			body.rfids.should.include.members [hash 'BEEF']
 			done()
 
 	it 'should 404 if rfid does not exist', (done) ->

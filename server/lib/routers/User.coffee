@@ -1,15 +1,15 @@
 User = global.mongoose.model 'User'
 Unassigned = global.mongoose.model 'Unassigned'
+crypto = require 'crypto'
 
-Crud = require './Crud'
+hash = (text) -> crypto.createHash('md5').update(text).digest 'hex'
 
-module.exports = class UserRouter extends Crud
+module.exports = class UserRouter
 	model: User
 	prefix: 'user'
 
 
 	constructor: (app) ->
-
 		app.get "/api/#{@prefix}", @list
 		app.get "/api/#{@prefix}/:id", @item
 
@@ -18,16 +18,30 @@ module.exports = class UserRouter extends Crud
 		app.get "/api/user/:id/login", @login
 		app.get "/api/user/:id/logout", @logout
 
+	list: (req, res) =>
+		@model.find req.query, (err, items) ->
+			console.log err if err?
+			res.json items
+
+	item: (req, res) =>
+		@model.findById req.params.id, (err, item) ->
+			console.log err if err?
+			if item?
+				res.json item
+			else
+				res.json 404, null
+
 	register: (req, res) =>
 		# body should be username, rfid
 
 		# check rfid for uniqueness in one upsert query
 		register = req.body
+		rfidHash = hash register.rfid
 		User.update
 			_id: register.username
-			rfids: {$ne: register.rfid}
+			rfids: {$ne: rfidHash}
 		,
-			$push: {rfids: register.rfid}
+			$push: {rfids: rfidHash}
 		,
 			upsert: true
 		, (err, numberAffected) =>
@@ -42,7 +56,8 @@ module.exports = class UserRouter extends Crud
 
 	# resolve rfid to user
 	getId: (req, res) =>
-		@model.findOne {rfids: req.params.id}, {activity: {$slice: -1}}, (err, item) ->
+		rfidHash = hash req.params.id
+		@model.findOne {rfids: rfidHash}, {activity: {$slice: -1}}, (err, item) ->
 			if item?
 				res.json item
 			else
@@ -58,7 +73,7 @@ module.exports = class UserRouter extends Crud
 
 	login: (req, res) =>
 		@model.update {_id: req.params.id}, {$push :{activity: {date: Date.now(), action: 'login'}}}, (err, numAffected) ->
-			console.log err
+			console.log err if err?
 			if numAffected is 1
 				res.send 200
 			else
