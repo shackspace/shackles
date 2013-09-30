@@ -9,7 +9,10 @@ Activity = new Schema
 
 schema = new Schema
 	_id: String
-	rfids: [String]
+	rfids:
+		type: [String]
+		index:
+			unique: true
 	activity: [Activity]
 
 module.exports = schema

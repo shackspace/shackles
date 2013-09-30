@@ -18,7 +18,7 @@ module.exports = class RegistrationController extends Controller
 				type: 'POST'
 				data: JSON.stringify
 					username: user.username
-					rfid: [user.rfid]
+					rfid: user.rfid
 				contentType: 'application/json'
 				success: (model, response, options) =>
 					console.log response
