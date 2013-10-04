@@ -3,7 +3,7 @@ include mixins/form_helpers
 
 h1 Registration
 
-form.form-horizontal.row-fluid
+form.form-horizontal(role='form')
 	mixin textfield({name: 'username', label: 'Username'})
 	mixin textfield({name: 'rfid', label: 'RFID'})
 	.control-group

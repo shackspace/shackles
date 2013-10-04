@@ -1,15 +1,11 @@
 mixin textfield(options)
-	.control-group(id=options.name + '_controlgroup')
-		label.control-label(for=options.name)= options.label
-		.controls
+	.form-group
+		label.control-label.col-lg-2(for=options.name)= options.label
+		.col-lg-10
 			- var classArr = [];
-			if options.size
-				- classArr.push(options.size);
-			else
-				- classArr.push('span8');
 			if options.disabled
 				- classArr.push('disabled');
-			input(class=classArr, type='text', name=options.name, id=options.name, value=options.value, placeholder=options.placeholder || options.label, list=options.list)
+			input.form-control(class=classArr, type='text', name=options.name, id=options.name, value=options.value, placeholder=options.placeholder || options.label, list=options.list)
 			if options.addon
 				span.add-on(class=options.addon)
 

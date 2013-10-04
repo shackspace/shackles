@@ -17,7 +17,7 @@ task 'bones', 'throw a bone', ->
 
 task 'watch', 'Watches all brunches', ->
 	brunch = spawn brunch, ['watch'], {cwd: 'server', stdio: 'inherit'}
-	nodemon = spawn nodemon, ['-L'], {cwd: 'server/lib', stdio: 'inherit'}
+	nodemon = spawn nodemon, ['-L', '-w', 'lib'], {cwd: 'server', stdio: 'inherit'}
 
 task 'test', 'test with mocha', ->
 	proc1 = spawn mocha, ['test/test_server.coffee'], {cwd: 'server', stdio: 'inherit'}
