@@ -19,7 +19,7 @@ task 'watch', 'Watches all brunches', ->
 	brunch = spawn brunch, ['watch'], {cwd: 'server', stdio: 'inherit'}
 	nodemon = spawn nodemon, ['-L', '-w', 'lib'], {cwd: 'server', stdio: 'inherit'}
 
-task 'run', 'compile and run the server' ->
+task 'run', 'compile and run the server', ->
 	spawn brunch, ['build'], {cwd: 'server', stdio: 'inherit'}
 	spawn 'coffee', ['lib/server.coffee'], {cwd: 'server', stdio:'inherit'}
 
