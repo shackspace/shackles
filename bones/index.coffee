@@ -1,3 +1,4 @@
+exec = require('child_process').exec
 async = require 'async'
 request = require 'request'
 serialport = require 'serialport'
@@ -11,16 +12,8 @@ rfidReader = new SerialPort '/dev/ttyUSB0',
 
 boneDisplay = new BoneDisplay '/dev/ttyO2'
 
-async.parallel [
-	(cb) -> rfidReader.open cb
-, 
-	(cb) -> boneDisplay.on 'ready', cb
-]
-, (err) ->
-	boneDisplay.displayText '      PORTHOS              0.1.0'
-	rfidReader.on 'data', (data) ->
-		id = data.replace /\W/g, ''
-		request
+tryId = (id) =>
+	request
 			url: serverUrl + '/api/id/' + id
 			method: 'GET'
 			json: true
@@ -31,7 +24,7 @@ async.parallel [
 				boneDisplay.displayText '!! SERVER DOWN !! SERVER DOWN !! SERVER DOWN !! SERVER DOWN !!',
 					direction: 'ltr'
 			else if response.statusCode is 404
-				boneDisplay.displayText 'No user found for ' + id
+				boneDisplay.displayText 'No user found for   ' + id
 			else if response.statusCode is 200
 				action = 'login'
 				if body.activity? and body.activity[0]? and body.activity[0].action is 'login'
@@ -40,3 +33,40 @@ async.parallel [
 					url: serverUrl + '/api/user/' + body._id + '/' + action
 					method: 'GET'
 				boneDisplay.displayText body._id + ' ' + action
+
+async.parallel [
+	(cb) -> rfidReader.open cb
+, 
+	(cb) -> boneDisplay.on 'ready', cb
+]
+, (err) ->
+	boneDisplay.displayText '      PORTHOS              0.1.0',
+		expire: 30000
+	rfidReader.on 'data', (data) ->
+		id = data.replace /\W/g, ''
+		tryId id
+
+
+# poll mifare stick
+
+nfcListRegex = /.*UID.*:(.*)/
+
+pollMifare = =>
+	exec 'nfc-list', (error, stdout, stderr) =>
+		#TODO: handle errors
+
+		match = stdout.match nfcListRegex
+		if not match
+			@mifareCurrentId = null
+		else
+			id = match[1].replace /\s/g, ''
+			#prevent server spam with polling results
+			if @mifareCurrentId isnt id
+				@mifareCurrentId = id
+				tryId id
+
+		setTimeout pollMifare, 100
+
+setTimeout pollMifare, 100
+
+console.log 'BONE BOOTED'

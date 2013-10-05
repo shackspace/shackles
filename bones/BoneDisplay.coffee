@@ -41,10 +41,12 @@ module.exports = class BoneDisplay extends EventEmitter
 			startingPoint: 'start'
 			direction: 'none'
 			finished: ''
+			expire: 3000
 
 		startingPoint = options.startingPoint
 		direction = options.direction
 		finished = options.finished
+		expire = options.expire
 
 		if startingPoint is 'end' and (direction is 'none' or direction is 'ltr')
 			#hm, korrigieren oder einfach beenden?
@@ -75,6 +77,10 @@ module.exports = class BoneDisplay extends EventEmitter
 		if direction is 'none'
 			@display.write '\r\n'
 			@display.write text
+			clearTimeout @expireTimer
+			expireTimer = setTimeout =>
+				@display.write '\r\n'
+			, expire
 		else if direction is 'ltr'
 			@display.write '\r\n'
 			@runningInterval = setInterval displayRunningLtr, @speed
