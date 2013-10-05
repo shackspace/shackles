@@ -3,20 +3,21 @@ request = require 'request'
 serialport = require 'serialport'
 SerialPort = serialport.SerialPort
 util = require 'util'
+BoneDisplay = require './BoneDisplay'
 
-serverUrl = 'http://10.42.15.69:9000'
+serverUrl = 'http://shackles.shack'
 rfidReader = new SerialPort '/dev/ttyUSB0',
 	parser: serialport.parsers.readline '\n'
 
-display = new SerialPort '/dev/ttyO2'
-
+boneDisplay = new BoneDisplay '/dev/ttyO2'
 
 async.parallel [
 	(cb) -> rfidReader.open cb
 , 
-	(cb) -> display.open cb
+	(cb) -> boneDisplay.on 'ready', cb
 ]
 , (err) ->
+	boneDisplay.displayText '      PORTHOS              0.1.0'
 	rfidReader.on 'data', (data) ->
 		id = data.replace /\W/g, ''
 		request
@@ -27,9 +28,10 @@ async.parallel [
 			if error?
 				console.log serverUrl + '/api/id/' + id
 				console.log error
-				display.write '\r\n' +  '!!SERVER DOWN!!'
+				boneDisplay.displayText '!! SERVER DOWN !! SERVER DOWN !! SERVER DOWN !! SERVER DOWN !!',
+					direction: 'ltr'
 			else if response.statusCode is 404
-				display.write '\r\n' + 'No user found for ' + id
+				boneDisplay.displayText 'No user found for ' + id
 			else if response.statusCode is 200
 				action = 'login'
 				if body.activity? and body.activity[0]? and body.activity[0].action is 'login'
@@ -37,4 +39,4 @@ async.parallel [
 				request
 					url: serverUrl + '/api/user/' + body._id + '/' + action
 					method: 'GET'
-				display.write '\r\n' + body._id + ' ' + action
+				boneDisplay.displayText body._id + ' ' + action
