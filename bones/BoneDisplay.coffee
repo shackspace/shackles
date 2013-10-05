@@ -69,13 +69,12 @@ module.exports = class BoneDisplay extends EventEmitter
 			run %= @displaySize + text.length    
 			run++
 
-	   
-
-	
+		if @runningInterval?
+			clearInterval @runningInterval
 
 		if direction is 'none'
 			@display.write '\r\n'
 			@display.write text
 		else if direction is 'ltr'
 			@display.write '\r\n'
-			setInterval displayRunningLtr, @speed
+			@runningInterval = setInterval displayRunningLtr, @speed
