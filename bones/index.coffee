@@ -38,8 +38,11 @@ async.parallel [
 	(cb) -> rfidReader.open cb
 , 
 	(cb) -> boneDisplay.on 'ready', cb
+,
+	(cb) -> exec 'systemctl stop bootmesg', cb
 ]
 , (err) ->
+
 	boneDisplay.displayText '      PORTHOS              0.1.0',
 		expire: 30000
 	rfidReader.on 'data', (data) ->
