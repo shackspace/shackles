@@ -31,8 +31,8 @@ offlineMesgs = [
 ]
 
 module.exports = class Bot extends irc.Client
-	constructor: (channels) ->
-		super 'chat.freenode.net', 'ShackleBot',
+	constructor: (name, channels) ->
+		super 'chat.freenode.net', name,
 			channels: channels
 			userName: 'shackles'
 
