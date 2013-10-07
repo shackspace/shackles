@@ -1,4 +1,5 @@
-Unassigned = global.mongoose.model 'Unassigned'
+mongoose = require 'mongoose'
+Unassigned = mongoose.model 'Unassigned'
 
 Crud = require './Crud'
 

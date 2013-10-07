@@ -1,33 +1,26 @@
-User = global.mongoose.model 'User'
-Unassigned = global.mongoose.model 'Unassigned'
-crypto = require 'crypto'
-
-hash = (text) -> crypto.createHash('md5').update(text).digest 'hex'
+mediator = require '../mediator'
 
 module.exports = class UserRouter
-	model: User
 	prefix: 'user'
-
 
 	constructor: (app) ->
 		app.get "/api/#{@prefix}", @list
 		app.get "/api/#{@prefix}/:id", @item
 
 		app.post "/api/user", @register
-		app.get "/api/id/:id", @getId
+		app.get "/api/id/:id", @getByRfid
+		app.get "/api/rfid/:id", @getByRfid
 		app.get "/api/user/:id/login", @login
 		app.get "/api/user/:id/logout", @logout
 
 	list: (req, res) =>
-		@model.find req.query, (err, items) ->
-			console.log err if err?
-			res.json items
+		mediator.emit '!user:list', req.query, (err, users) ->
+			res.json users
 
 	item: (req, res) =>
-		@model.findById req.params.id, (err, item) ->
-			console.log err if err?
-			if item?
-				res.json item
+		mediator.emit '!user:get', req.params.id, (err, user) ->
+			if user?
+				res.json user
 			else
 				res.json 404, null
 
@@ -35,55 +28,42 @@ module.exports = class UserRouter
 		# body should be username, rfid
 
 		# check rfid for uniqueness in one upsert query
-		register = req.body
-		rfidHash = hash register.rfid
-		User.update
-			_id: register.username
-			rfids: {$ne: rfidHash}
-		,
-			$push: {rfids: rfidHash}
-		,
-			upsert: true
-		, (err, numberAffected) =>
-			if err? and err.code is 11000 # duplicate index
+		register =
+			username: req.body.username
+			rfid: req.body.rfid
+
+		mediator.emit '!user:register', register, (err) ->
+			if err? and err is 'conflict' # duplicate index
 				res.send 404 # better code?
 			else if err?
-				console.log err 
+				res.send 500
 			else
-				Unassigned.remove {_id: register.rfid}, (err) ->
-					console.log err if err?
 				res.send 200
 
 	# resolve rfid to user
-	getId: (req, res) =>
-		rfidHash = hash req.params.id
-		@model.findOne {rfids: rfidHash}, {activity: {$slice: -1}}, (err, item) ->
-			if item?
-				res.json item
-			else
-				Unassigned.update
-					_id: req.params.id
-				,
-					date: Date.now()
-				,
-					upsert: true
-				, (err) ->
-					console.log err if err?
+	getByRfid: (req, res) =>
+		mediator.emit '!user:getByRfid', req.params.id, (err, user) ->
+			if err? and err is 404
 				res.json 404, null
+			else if user?
+				res.json user
+			else
+				res.send 500
 
 	login: (req, res) =>
-		@model.update {_id: req.params.id}, {$push :{activity: {date: Date.now(), action: 'login'}}}, (err, numAffected) ->
-			console.log err if err?
-			if numAffected is 1
-				res.send 200
-			else
+		mediator.emit '!user:login', req.params.id, (err) ->
+			if err? and err is 404
 				res.send 404
-
-
+			else if err?
+				res.send 500
+			else
+				res.send 200
 
 	logout: (req, res) =>
-		@model.update {_id: req.params.id}, {$push :{activity: {date: Date.now(), action: 'logout'}}}, (err, numAffected) ->
-			if numAffected is 1
-				res.send 200
-			else
+		mediator.emit '!user:logout', req.params.id, (err) ->
+			if err? and err is 404
 				res.send 404
+			else if err?
+				res.send 500
+			else
+				res.send 200

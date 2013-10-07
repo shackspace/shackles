@@ -1,5 +1,5 @@
-# der
-Schema = global.mongoose.Schema
+mongoose = require 'mongoose'
+Schema = mongoose.Schema
 
 Activity = new Schema
 	date:
