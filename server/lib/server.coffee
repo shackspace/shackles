@@ -5,6 +5,8 @@ log.setLevel if process.isTest then 'FATAL' else 'INFO'
 express = require 'express'
 path = require 'path'
 
+config = require '../server_config'
+
 app = module.exports = express()
 
 # Load db stuff
@@ -34,12 +36,14 @@ app.configure 'production', ->
 
 new (require('./controllers/User'))()
 
-new (require('./routers/User')) app
-new (require('./routers/Unassigned')) app
+new (require('./rest/User')) app
+new (require('./rest/Unassigned')) app
+
+new (require('./irc/bot')) config.irc.channels
 
 app.get '*', (req, res) ->
 	res.sendfile path.normalize __dirname + '/../public/index.html'
 
-server = app.listen 9000, ->
-	log.info "Express server listening on port %d in %s mode", 9000, app.settings.env
+server = app.listen config.port, ->
+	log.info "Express server listening on port %d in %s mode", config.port, app.settings.env
 	app.emit 'ready'

@@ -14,5 +14,8 @@ schema = new Schema
 		index:
 			unique: true
 	activity: [Activity]
+	status:
+		type: String # 'logged out', 'logged in'
+		default: 'logged out'
 
 module.exports = schema

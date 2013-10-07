@@ -28,5 +28,5 @@ Debug/
 Release/
 
 *.log
-
+server_config.coffee
 .idea

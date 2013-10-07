@@ -20,10 +20,12 @@ module.exports = class UserController
 		mediator.on '!user:login', @login
 		mediator.on '!user:logout', @logout
 
-	list: (query, cb) =>
-		if not query?
+	list: (query, projection, cb) =>
+		if not cb?
+			cb = projection
+		if not projection?
 			cb = query
-		User.find query, (err, users) ->
+		User.find query, projection, (err, users) ->
 			console.log err if err?
 			cb err, users
 
@@ -74,23 +76,23 @@ module.exports = class UserController
 				cb 404
 
 	login: (id, cb) =>
-		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'login'}}}, (err, numAffected) ->
+		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'login'}}, status: 'logged in'}, (err, numAffected) ->
 			if err?
 				console.log err
 				cb err
 			else if numAffected is 1
+				mediator.emit 'user:loggedIn', id
 				cb()
 			else
 				cb 404
 
-
-
 	logout: (id, cb) =>
-		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'logout'}}}, (err, numAffected) ->
+		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'logout'}}, status: 'logged out'}, (err, numAffected) ->
 			if err?
 				console.log err
 				cb err
 			else if numAffected is 1
+				mediator.emit 'user:loggedOut', id
 				cb()
 			else
 				cb 404
