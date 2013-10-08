@@ -8,7 +8,6 @@ module.exports = class Crud
 		app.delete "/api/#{@prefix}/:id", @delete
 
 	list: (req, res) =>
-		console.log @
 		@model.find req.query, (err, items) ->
 			console.log err if err?
 			res.json items

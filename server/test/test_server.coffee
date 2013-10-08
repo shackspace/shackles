@@ -42,7 +42,7 @@ describe 'Server', ->
 				done err
 
 	it 'should register new user', (done) ->
-		req = request
+		request
 			url: host + '/api/user'
 			method: 'POST'
 			json:
@@ -54,7 +54,7 @@ describe 'Server', ->
 			done()
 
 	it 'should get user info by user id', (done) ->
-		req = request
+		request
 			url: host + '/api/user/rash'
 			method: 'GET'
 			json: true
@@ -66,7 +66,7 @@ describe 'Server', ->
 			done()
 
 	it 'should 404 if user id does not exist', (done) ->
-		req = request
+		request
 			url: host + '/api/user/krebs'
 			method: 'GET'
 			json: true
@@ -77,7 +77,7 @@ describe 'Server', ->
 			done()
 
 	it 'should get user info with rfid', (done) ->
-		req = request
+		request
 			url: host + '/api/id/BEEF'
 			method: 'GET'
 			json: true
@@ -89,7 +89,7 @@ describe 'Server', ->
 			done()
 
 	it 'should 404 if rfid does not exist', (done) ->
-		req = request
+		request
 			url: host + '/api/id/B00B1E5'
 			method: 'GET'
 			json: true
@@ -99,8 +99,39 @@ describe 'Server', ->
 			should.not.exist body
 			done()
 
+	it 'should list unassigned rfids', (done) ->
+		request
+			url: host + '/api/unassigned/'
+			method: 'GET'
+			json: true
+		, (error, response, body) ->
+			done error if error?
+			response.statusCode.should.equal 200
+			body[0]._id.should.equal 'B00B1E5'
+			done()
+
+	it 'should register another new user and remove unassigned rfid', (done) ->
+		request
+			url: host + '/api/user'
+			method: 'POST'
+			json:
+				username: 'hexxor'
+				rfid: 'B00B1E5'
+		, (error, response, body) ->
+			done error if error?
+			response.statusCode.should.equal 200
+			request
+				url: host + '/api/unassigned/'
+				method: 'GET'
+				json: true
+			, (error, response, body) ->
+				done error if error?
+				response.statusCode.should.equal 200
+				body.length.should.equal 0
+				done()
+
 	it 'should login with rfid', (done) ->
-		req = request
+		request
 			url: host + '/api/user/rash/login'
 			method: 'GET'
 		, (error, response, body) ->
@@ -109,7 +140,7 @@ describe 'Server', ->
 			done()
 
 	it 'should 404 on wrong login', (done) ->
-		req = request
+		request
 			url: host + '/api/user/krebs/login'
 			method: 'GET'
 		, (error, response, body) ->
@@ -118,7 +149,7 @@ describe 'Server', ->
 			done()
 
 	it 'should logout with rfid', (done) ->
-		req1 = request
+		request
 			url: host + '/api/user/rash/logout'
 			method: 'GET'
 		, (error, response, body) ->
@@ -127,7 +158,7 @@ describe 'Server', ->
 			done()
 
 	it 'should 404 on wrong logout', (done) ->
-		req = request
+		request
 			url: host + '/api/user/krebs/logout'
 			method: 'GET'
 		, (error, response, body) ->
