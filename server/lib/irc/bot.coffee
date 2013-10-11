@@ -35,7 +35,9 @@ module.exports = class Bot extends irc.Client
 		super 'chat.freenode.net', name,
 			channels: channels
 			userName: 'shackles'
-			retryCount: 900001
+			debug: true
+			showErrors: true
+		console.log @opt
 
 		@addListener 'error', (message) ->
 			log.error message
