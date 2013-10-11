@@ -61,4 +61,7 @@ module.exports = class Bot extends irc.Client
 					else
 						message = "#{online[..-2].join(', ')} and #{online[-1..]} are"
 					message +=  " currently #{onlineVerbs[Math.floor(Math.random()*onlineVerbs.length)]} in the shack."
-				@say to, message
+				if to.indexOf('#') is 0
+					@say to, message
+				else
+					@say from, message
