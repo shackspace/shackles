@@ -1,5 +1,5 @@
 Controller = require 'controllers/base/controller'
-RegistrationView = require 'views/registration'
+RegistrationView = require 'views/registration_view'
 {UnassignedIds} = require 'models/unassigned'
 User = require 'models/user'
 
@@ -8,7 +8,10 @@ module.exports = class RegistrationController extends Controller
 
 	index: ->
 		unassignedIds = new UnassignedIds()
-		unassignedIds.fetch()
+		unassignedIds.fetch
+			data:
+				sort:
+					_id: -1
 		@view = new RegistrationView
 			collection: unassignedIds
 

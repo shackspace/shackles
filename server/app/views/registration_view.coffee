@@ -5,6 +5,7 @@ module.exports = class RegistrationView extends View
 	container: '#page-container'
 	autoRender: true
 	template: require '/views/templates/registration'
+	className: 'row'
 
 	events:
 		'submit form' : 'submit'
