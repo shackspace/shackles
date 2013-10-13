@@ -2,6 +2,9 @@
 {SerialPort} = require 'serialport'
 _ = require 'underscore'
 {EventEmitter} = require 'events'
+{exec} = require 'child_process'
+
+fortuneCall = 'fortune -asn 40'
 
 module.exports = class BoneDisplay extends EventEmitter
 	
@@ -33,7 +36,6 @@ module.exports = class BoneDisplay extends EventEmitter
 	#   direction: rtl, ltr or none
 	#   finished: callback
 	displayText: (text, options) =>
-
 		throw new Error 'no text defined' if not text?
 
 		options = {} if not options?
@@ -41,7 +43,7 @@ module.exports = class BoneDisplay extends EventEmitter
 			startingPoint: 'start'
 			direction: 'none'
 			finished: ''
-			expire: 3000
+			expire: 5000
 
 		startingPoint = options.startingPoint
 		direction = options.direction
@@ -55,6 +57,9 @@ module.exports = class BoneDisplay extends EventEmitter
 		if startingPoint is 'start' and direction is 'none' and text.length > 40
 			direction = 'ltr'
 
+
+		# kill \n and \r, these clear the display
+		text = text.replace /[\r\n]/g, ''
 		run = 1
 
 		displayRunningLtr = =>
@@ -75,11 +80,14 @@ module.exports = class BoneDisplay extends EventEmitter
 			clearInterval @runningInterval
 
 		if direction is 'none'
+			console.log 'diplay Text: ', text
 			@display.write '\r\n'
 			@display.write text
 			clearTimeout @expireTimer
-			expireTimer = setTimeout =>
-				@display.write '\r\n'
+			@expireTimer = setTimeout =>
+				fortuneText = exec fortuneCall, (error, stdout, stderr) =>
+					@displayText stdout,
+						expire: 20000
 			, expire
 		else if direction is 'ltr'
 			@display.write '\r\n'

@@ -44,7 +44,7 @@ async.parallel [
 , (err) ->
 
 	boneDisplay.displayText '      PORTHOS              0.1.0',
-		expire: 30000
+		expire: 3000
 	rfidReader.on 'data', (data) ->
 		id = data.replace /\W/g, ''
 		tryId id
