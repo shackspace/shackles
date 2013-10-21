@@ -21,7 +21,7 @@ task 'watch', 'Watches all brunches', ->
 
 task 'run', 'compile and run the server', ->
 	spawn brunch, ['build'], {cwd: 'server', stdio: 'inherit'}
-	spawn 'coffee', ['lib/server.coffee'], {cwd: 'server', stdio:'inherit'}
+	spawn forever, ['-c', 'coffee', 'lib/server.coffee'], {cwd: 'server', stdio:'inherit'}
 
 
 task 'test', 'test with mocha', ->
