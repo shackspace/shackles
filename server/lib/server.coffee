@@ -35,14 +35,16 @@ app.configure 'production', ->
 	app.use express.errorHandler()
 
 new (require('./controllers/User'))()
+new (require('./controllers/timeout'))()
+
 
 new (require('./rest/User')) app
 new (require('./rest/Unassigned')) app
 
 
 # dont use the irc bot on unit tests
-if not process.isTest
-	new (require('./irc/bot')) config.irc.name, config.irc.channels
+#if not process.isTest
+#	new (require('./irc/bot')) config.irc.name, config.irc.channels
 
 app.get '*', (req, res) ->
 	res.sendfile path.normalize __dirname + '/../public/index.html'
