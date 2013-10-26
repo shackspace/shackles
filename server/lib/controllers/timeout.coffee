@@ -13,17 +13,26 @@ timeoutThreshold = moment.duration '12:00'
 module.exports = class TimeoutController
 
 	constructor: ->
+
+		logout = (userId) ->
+			mediator.emit '!user:logout', userId, ->
+					log.info 'automatically logged out ' + userId
+
+
 		mediator.emit '!user:list', {}, {activity: {$slice: -1}}, (err, users) ->
 			for user in users
 				continue if user.activity.length < 1
 				continue if user.activity[0].action isnt 'login'
-				if moment().diff(moment(user.activity[0].date).add(timeoutThreshold)) <= 0
-					mediator.emit '!user:logout', user._id, ->
-						log.info 'automatically logged out ' + user._id
-
+				diff = moment(user.activity[0].date).add(timeoutThreshold).diff moment()
+				if diff <= 0
+					logout user._id
+				else
+					setTimeout ->
+						logout user._id
+					, diff
 
 		mediator.on 'user:loggedIn', (id) ->
 			setTimeout ->
-				mediator.emit '!user:logout', id, ->
-					log.info 'automatically logged out ' + id
+				logout id
 			, timeoutThreshold.asMilliseconds()
+
