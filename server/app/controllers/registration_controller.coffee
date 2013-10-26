@@ -11,7 +11,7 @@ module.exports = class RegistrationController extends Controller
 		unassignedIds.fetch
 			data:
 				sort:
-					_id: -1
+					date: -1
 		@view = new RegistrationView
 			collection: unassignedIds
 

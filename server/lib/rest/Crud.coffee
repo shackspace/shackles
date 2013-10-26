@@ -8,7 +8,12 @@ module.exports = class Crud
 		app.delete "/api/#{@prefix}/:id", @delete
 
 	list: (req, res) =>
-		@model.find req.query.query, req.query.projection, {sort: req.query.sort}, (err, items) ->
+		console.log req.query
+		# parse shitty sort querystring, because 1 and -1 are strings now
+		sort = {}
+		for key, value of req.query.sort
+			sort[key] = parseInt value
+		@model.find req.query.query, req.query.projection, {sort: sort}, (err, items) ->
 			console.log err if err?
 			res.json items
 
