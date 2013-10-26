@@ -12,6 +12,16 @@ rfidReader = new SerialPort '/dev/ttyUSB0',
 
 boneDisplay = new BoneDisplay '/dev/ttyO2'
 
+greetingMessages = [
+	'Welcome, $$'
+	'Greetings, $$'
+]
+
+partingMessages = [
+	'Goodbye, $$'
+	'Farewell, $$'
+]
+
 tryId = (id) =>
 	request
 			url: serverUrl + '/api/id/' + id
@@ -32,7 +42,11 @@ tryId = (id) =>
 				request
 					url: serverUrl + '/api/user/' + body._id + '/' + action
 					method: 'GET'
-				boneDisplay.displayText body._id + ' ' + action
+
+				if action is 'login'
+					boneDisplay.displayText greetingMessages[Math.floor(Math.random()*greetingMessages.length)].replace '$$', body._id
+				else if action is 'logout'
+					boneDisplay.displayText partingMessages[Math.floor(Math.random()*partingMessages.length)].replace '$$', body._id
 
 async.parallel [
 	(cb) -> rfidReader.open cb
