@@ -28,7 +28,8 @@
     "log4js": "~0.6.6",
     "mongoose": ">=3.6.x",
     "socket.io": "~0.9.16",
-    "irc": "git://github.com/martynsmith/node-irc.git"
+    "irc": "git://github.com/martynsmith/node-irc.git",
+    "moment": "~2.3.1"
   },
   "devDependencies": {
     "chai": "1.7.2",

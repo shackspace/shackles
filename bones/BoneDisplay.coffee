@@ -1,4 +1,3 @@
-
 {SerialPort} = require 'serialport'
 _ = require 'underscore'
 {EventEmitter} = require 'events'
