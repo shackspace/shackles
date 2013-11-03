@@ -26,7 +26,8 @@ class UserItemView extends View
 		data = super()
 		if data.status is 'logged in'
 			data.timeLeft = moment(data.activity[0].date).add(timeoutThreshold).diff moment()
-			console.log data.timeLeft
+			data.timeLeftFraction = data.timeLeft/timeoutThreshold.asMilliseconds()
+			data.humanTimeLeft = moment.duration(data.timeLeft).humanize()
 		data
 
 class UsersCollectionView extends CollectionView
