@@ -1,14 +1,24 @@
 include mixins/form_helpers
 
-.col-lg-6
-	h1 Registration
-	form.form-horizontal(role='form')
-		mixin textfield({name: 'username', label: 'Username'})
-		mixin textfield({name: 'rfid', label: 'RFID'})
-		.form-group
-			.col-lg-10.col-lg-offset-2
-				button.btn.btn-primary.btn-lg.btn-block(type='submit') Register
+#registration-form
+	.col-lg-6
+		h1 Registration
+		form.form-horizontal(role='form')
+			mixin textfield({name: 'username', label: 'Username'})
+			mixin textfield({name: 'rfid', label: 'RFID'})
+			.form-group
+				.col-lg-10.col-lg-offset-2
+					button.btn.btn-primary.btn-lg.btn-block(type='submit') Register
 
-.col-lg-6
-	h4(style='margin: 30px 0 20px') Last Unregistered Accesses
-	.well#unassigned
+	.col-lg-6
+		h4(style='margin: 30px 0 20px') Last Unregistered Accesses
+		.well#unassigned
+
+#success(style='display: none')
+	h3 Thanks for Registering, you can login now!
+
+#error-server(style='display: none')
+	h3 something went really wrong. Sorry!
+
+#error-conflict(style='display: none')
+	h3 That RFID is already taken!

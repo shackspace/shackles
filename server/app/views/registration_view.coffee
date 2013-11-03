@@ -31,6 +31,18 @@ module.exports = class RegistrationView extends View
 			rfid: @$('#rfid').val()
 		return
 
+	showSuccess: =>
+		@$('#registration-form').hide()
+		@$('#success-message').show()
+
+	showServerError: =>
+		@$('#registration-form').hide()
+		@$('#error-server').show()
+
+	showConflictError: =>
+		@$('#registration-form').hide()
+		@$('#error-conflict').show()
+
 class UnassignedItemView extends View
 	template: require '/views/templates/unassigned_item'
 	tagName: 'li'

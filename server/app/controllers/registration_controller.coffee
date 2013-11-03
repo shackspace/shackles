@@ -27,4 +27,9 @@ module.exports = class RegistrationController extends Controller
 					rfid: user.rfid
 				contentType: 'application/json'
 				success: (model, response, options) =>
-					console.log response
+					@view.showSuccess()
+				error: (response) =>
+					if response.status is 404
+						@view.showConflictError()
+					else
+						@view.showServerError()

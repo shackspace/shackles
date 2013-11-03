@@ -12,11 +12,17 @@ module.exports = class HeaderView extends View
 
 	events:
 		'click #users': 'toUsers'
+		'click .navbar-brand': 'toHome'
 
 	initialize: ->
 		super
 		@subscribeEvent 'loginStatus', @render
 		@subscribeEvent 'startupController', @render
+
+	toHome: (event) =>
+		event.preventDefault()
+		Chaplin.helpers.redirectTo 'registration#index', trigger : true
+		false
 
 	toUsers: (event) =>
 		event.preventDefault()
