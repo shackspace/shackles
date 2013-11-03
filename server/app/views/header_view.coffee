@@ -18,5 +18,7 @@ module.exports = class HeaderView extends View
 		@subscribeEvent 'loginStatus', @render
 		@subscribeEvent 'startupController', @render
 
-	toUsers: =>
+	toUsers: (event) =>
+		event.preventDefault()
 		Chaplin.helpers.redirectTo 'users#index'
+		false
