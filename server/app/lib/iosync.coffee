@@ -17,7 +17,7 @@ Backbone.sync = (method, model, options) ->
 	if method is 'update'
 		url = model.urlRoot
 	
-	url += ':' + method
+	url = "!#{url}:#{method}"
 	data = options.data or model.toJSON()
 	cb = (err, data) ->
 		if err?
@@ -27,5 +27,5 @@ Backbone.sync = (method, model, options) ->
 	if method is 'update'
 		mediator.publish '!io:emit', url, model.id, data, cb
 	else
-		mediator.publish '!io:emit', url, data, cb
+		mediator.publish '!io:emit', url, data.query, data.projection, data.options, cb
 	return null

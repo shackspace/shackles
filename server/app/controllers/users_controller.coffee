@@ -4,13 +4,16 @@ Controller = require 'controllers/base/controller'
 
 module.exports = class UserController extends Controller
 	historyURL: 'users'
-
 	index: ->
 		users = new Users()
 		users.fetch
 			data:
-				sort:
-					status: 1
+				options:
+					sort:
+						status: 1
+				projection:
+					activity:
+						$slice: -1
 		@view = new UsersView
 			collection: users
 

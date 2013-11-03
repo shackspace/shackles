@@ -6,6 +6,7 @@ express = require 'express'
 path = require 'path'
 
 config = require '../server_config'
+mediator = require './mediator'
 
 app = module.exports = express()
 
@@ -13,7 +14,7 @@ app = module.exports = express()
 
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/shackles'
-
+mongoose.set('debug', true)
 User = mongoose.model 'User', require('./schemas/User'), 'users'
 Unassigned = mongoose.model 'Unassigned', require('./schemas/Unassigned'), 'unassigned'
 
@@ -35,6 +36,7 @@ app.configure 'production', ->
 	app.use express.errorHandler()
 
 new (require('./controllers/User'))()
+new (require('./controllers/Unassigned'))()
 new (require('./controllers/timeout'))()
 
 
@@ -52,3 +54,30 @@ app.get '*', (req, res) ->
 server = app.listen config.port, ->
 	log.info "Express server listening on port %d in %s mode", config.port, app.settings.env
 	app.emit 'ready'
+
+io = require('socket.io').listen server
+	# logger:
+	# 	debug: ->
+	# 		accessLogger.debug.apply accessLogger, arguments
+	# 	info: ->
+	# 		accessLogger.info.apply accessLogger, arguments
+	# 	warn: ->
+	# 		accessLogger.warn.apply accessLogger, arguments
+	# 	error: ->
+	# 		accessLogger.error.apply accessLogger, arguments
+
+# start up submodules
+io.sockets.on 'connection', (socket) =>
+	$emit = socket.$emit
+	socket.$emit = ->
+		#args = Array.prototype.slice.call arguments
+		mediator.emit.apply mediator, arguments
+		$emit.apply socket, arguments
+
+	# mediator.subscribe '!io:emit', () ->
+	# 	args = Array.prototype.slice.call arguments
+	# 	# console.log args[1..]
+	# 	socket.emit.apply socket, args, args
+ #  socket.emit('news', { hello: 'world' });
+ #  socket.on('my other event', function (data) {
+ #    console.log(data);

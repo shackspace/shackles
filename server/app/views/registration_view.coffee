@@ -33,7 +33,7 @@ module.exports = class RegistrationView extends View
 
 	showSuccess: =>
 		@$('#registration-form').hide()
-		@$('#success-message').show()
+		@$('#success').show()
 
 	showServerError: =>
 		@$('#registration-form').hide()

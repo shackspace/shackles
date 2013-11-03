@@ -1,3 +1,4 @@
+mediator = require 'mediator'
 Controller = require 'controllers/base/controller'
 RegistrationView = require 'views/registration_view'
 {UnassignedIds} = require 'models/unassigned'
@@ -19,17 +20,14 @@ module.exports = class RegistrationController extends Controller
 			collection: unassignedIds
 
 		@subscribeEvent 'registration:register', (user) =>
-			$.ajax 
-				url: '/api/user'
-				type: 'POST'
-				data: JSON.stringify
-					username: user.username
-					rfid: user.rfid
-				contentType: 'application/json'
-				success: (model, response, options) =>
-					@view.showSuccess()
-				error: (response) =>
-					if response.status is 404
+			mediator.publish '!io:emit', "!user:register",
+				username: user.username
+				rfid: user.rfid
+			, (err) =>
+				if err?
+					if err is 'conflict'
 						@view.showConflictError()
 					else
 						@view.showServerError()
+				else
+					@view.showSuccess()

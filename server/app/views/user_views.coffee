@@ -1,5 +1,6 @@
 View = require 'views/base/view'
 CollectionView = require 'views/base/collection_view'
+timeoutThreshold = moment.duration '12:00'
 
 module.exports.UsersView = class UsersView extends View
 	container: '#page-container'
@@ -20,6 +21,13 @@ module.exports.UsersView = class UsersView extends View
 class UserItemView extends View
 	template: require '/views/templates/user_item'
 	tagName: 'tr'
+
+	getTemplateData: =>
+		data = super()
+		if data.status is 'logged in'
+			data.timeLeft = moment(data.activity[0].date).add(timeoutThreshold).diff moment()
+			console.log data.timeLeft
+		data
 
 class UsersCollectionView extends CollectionView
 	tagName: 'table'

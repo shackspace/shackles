@@ -5,7 +5,7 @@ HeaderController = require 'controllers/header_controller'
 FooterController = require 'controllers/footer_controller'
 # Layout = require 'views/layout'
 
-# require 'lib/iosync'
+require 'lib/iosync'
 
 # The application object
 module.exports = class Application extends Chaplin.Application
@@ -13,13 +13,17 @@ module.exports = class Application extends Chaplin.Application
 	# “Controller title – Site title” (see Layout#adjustTitle)
 	title: 'shackles'
 	serverUrl: location.protocol + "//" + location.host
-	initialize: ->
-		super
-		@initControllers()
-	# 	# Initialize core components
-	# 	@initDispatcher()
-	# 	@initLayout()
-	# 	@initMediator()
+	initialize: (options) ->
+
+		# Initialize core components
+		@initDispatcher()
+		@initLayout()
+		@initComposer()
+		@initMediator()
+		@initSocket =>
+			@initRouter options.routes
+			@initControllers()
+			@start()
 
 	# 	@router = new Router()
 
@@ -30,7 +34,7 @@ module.exports = class Application extends Chaplin.Application
 	# 		@router.startHistory()
 	# 		#mediator.publish '!router:route', ''
 
-	# 	# @initSocket ->
+		
 	# 	# 	auth = new AuthenticationController()
 
 	# 	# Freeze the application instance to prevent further changes
@@ -58,21 +62,19 @@ module.exports = class Application extends Chaplin.Application
 	# 	# Seal the mediator
 	# 	Chaplin.mediator.seal()
 
-	# initSocket: (cb) =>
-	# 	socket = io.connect @serverUrl
+	initSocket: (cb) =>
+		socket = io.connect @serverUrl
+		$emit = socket.$emit
+		socket.$emit = () ->
+			args = Array.prototype.slice.call arguments
+			mediator.publish "!io:#{args[0]}", args[1..]
+			$emit.apply socket, arguments
 
-	# 	$emit = socket.$emit
-	# 	socket.$emit = () ->
-	# 		args = Array.prototype.slice.call arguments
-	# 		mediator.publish "!io:#{args[0]}", args[1..]
-	# 		$emit.apply socket, arguments
+		mediator.subscribe '!io:emit', ->
+			args = Array.prototype.slice.call arguments
+			socket.emit.apply socket, args
 
-	# 	mediator.subscribe '!io:emit', () ->
-	# 		args = Array.prototype.slice.call arguments
-	# 		# console.log args[1..]
-	# 		socket.emit.apply socket, args, args
+		socket.on 'connect', cb
 
-	# 	socket.on 'connect', cb
-
-	# 	socket.on 'error', () ->
-	# 		console.log 'LOL'
+		socket.on 'error', () ->
+			console.log 'LOL'
