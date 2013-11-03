@@ -22,7 +22,6 @@ module.exports = class UserController
 
 	list: (query, projection, options, cb) =>
 		args = Array.prototype.slice.call arguments
-		console.log args
 		cb = args.pop()
 		query = args[0] or {}
 		projection = args[1] or {}

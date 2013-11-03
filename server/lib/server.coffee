@@ -14,7 +14,7 @@ app = module.exports = express()
 
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/shackles'
-mongoose.set('debug', true)
+# mongoose.set('debug', true)
 User = mongoose.model 'User', require('./schemas/User'), 'users'
 Unassigned = mongoose.model 'Unassigned', require('./schemas/Unassigned'), 'unassigned'
 
