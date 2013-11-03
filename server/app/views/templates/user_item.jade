@@ -1,6 +1,6 @@
 td= _id
 if status == "logged in"
-	td.logged-in
+	td.logged-in(title=humanTimeLeft+' left')
 		.logged-in-fraction(style='width: #{timeLeftFraction*100}%')
 else
 	td.logged-out 
