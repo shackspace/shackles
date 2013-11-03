@@ -10,7 +10,13 @@ module.exports = class HeaderView extends View
 	container: '#header-container'
 	autoRender: true
 
+	events:
+		'click #users': 'toUsers'
+
 	initialize: ->
 		super
 		@subscribeEvent 'loginStatus', @render
 		@subscribeEvent 'startupController', @render
+
+	toUsers: =>
+		Chaplin.helpers.redirectTo 'users#index'

@@ -12,6 +12,7 @@ exports.config =
 				# even if they aren't specified in order.before.
 				before: [
 					'vendor/scripts/console-helper.js',
+					'vendor/scripts/moment-with-lang.js',
 					'vendor/scripts/jquery.js',
 					'vendor/scripts/lodash.js',
 					'vendor/scripts/backbone.js',

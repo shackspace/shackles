@@ -1,7 +1,7 @@
 Controller = require 'controllers/base/controller'
 RegistrationView = require 'views/registration_view'
 {UnassignedIds} = require 'models/unassigned'
-User = require 'models/user'
+{User} = require 'models/user'
 
 module.exports = class RegistrationController extends Controller
 	historyURL: 'registration'
@@ -10,6 +10,9 @@ module.exports = class RegistrationController extends Controller
 		unassignedIds = new UnassignedIds()
 		unassignedIds.fetch
 			data:
+				query:
+					date:
+						$gte: moment().subtract(1, 'hour').toJSON()
 				sort:
 					date: -1
 		@view = new RegistrationView

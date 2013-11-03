@@ -14,7 +14,11 @@ module.exports = class UserRouter
 		app.get "/api/user/:id/logout", @logout
 
 	list: (req, res) =>
-		mediator.emit '!user:list', req.query, (err, users) ->
+		# parse shitty sort querystring, because 1 and -1 are strings now
+		sort = {}
+		for key, value of req.query.sort
+			sort[key] = parseInt value
+		mediator.emit '!user:list', req.query.query, req.query.projection, {sort: sort}, (err, users) ->
 			res.json users
 
 	item: (req, res) =>

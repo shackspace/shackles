@@ -8,7 +8,6 @@ module.exports = class Crud
 		app.delete "/api/#{@prefix}/:id", @delete
 
 	list: (req, res) =>
-		console.log req.query
 		# parse shitty sort querystring, because 1 and -1 are strings now
 		sort = {}
 		for key, value of req.query.sort
