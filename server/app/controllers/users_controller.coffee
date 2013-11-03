@@ -11,6 +11,8 @@ module.exports = class UserController extends Controller
 				options:
 					sort:
 						status: 1
+						'activity.date': -1
+						_id: 1
 				projection:
 					activity:
 						$slice: -1
