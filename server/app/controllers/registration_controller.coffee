@@ -12,7 +12,7 @@ module.exports = class RegistrationController extends Controller
 			data:
 				query:
 					date:
-						$gte: moment(Date.now()).subtract(1, 'hour').toJSON()
+						$gte: moment().subtract(1, 'hour').toJSON()
 				sort:
 					date: -1
 		@view = new RegistrationView
