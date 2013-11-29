@@ -44,9 +44,9 @@ new (require('./rest/User')) app
 new (require('./rest/Unassigned')) app
 
 
-# dont use the irc bot on unit tests
-#if not process.isTest
-#	new (require('./irc/bot')) config.irc.name, config.irc.channels
+# dont use the redis connector on unit tests
+if not process.isTest
+	new (require('./redis/redis'))()
 
 app.get '*', (req, res) ->
 	res.sendfile path.normalize __dirname + '/../public/index.html'

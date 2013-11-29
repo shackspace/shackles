@@ -20,6 +20,7 @@
 *.pdb
 *.exe
 *.dll
+*.pyc
 
 node_modules/
 build/
