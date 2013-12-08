@@ -17,5 +17,7 @@ schema = new Schema
 	status:
 		type: String # 'logged out', 'logged in'
 		default: 'logged out'
+	password: String
+	latePasswordToken: String
 
 module.exports = schema

@@ -2,6 +2,7 @@
 
 mediator = require '../mediator'
 mongoose = require 'mongoose'
+credential = require 'credential'
 
 User = mongoose.model 'User'
 Unassigned = mongoose.model 'Unassigned'
@@ -19,6 +20,23 @@ module.exports = class UserController
 		mediator.on '!user:getByRfid', @getByRfid
 		mediator.on '!user:login', @login
 		mediator.on '!user:logout', @logout
+
+	# authenticate user, returns the user on success
+	authenticate: (username, password, cb) =>
+		User.findById username, (err, user) =>
+			credential.verify user.password, password, (err, isValid) =>
+				cb err, (user if isValid)
+
+	requestLatePasswordToken: (username, cb) =>
+		User.update {_id: username}, {latePasswordToken: DERP}
+
+	setLatePassword: (username, password, token, cb) =>
+		User.find {_id: username, latePasswordToken: token}, (err, user) =>
+			return cb null unless user?
+			credential.hash password, (err, hash) =>
+				user.password = hash
+				user.save (err) =>
+					cb err
 
 	list: (query, projection, options, cb) =>
 		args = Array.prototype.slice.call arguments
@@ -62,7 +80,18 @@ module.exports = class UserController
 	# resolve rfid to user
 	getByRfid: (rfid, cb) =>
 		rfidHash = hash rfid
-		User.findOne {rfids: rfidHash}, {activity: {$slice: -1}}, (err, user) ->
+		User.findOneAndUpdate
+			rfids: rfidHash
+		,
+			$unset:
+				latePasswordToken: ''
+		,
+			select:
+				activity: 
+					$slice: -1
+				password: 0
+			new: false
+		, (err, user) =>
 			# TODO err
 			if user?
 				cb null, user

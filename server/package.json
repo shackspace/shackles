@@ -29,7 +29,8 @@
     "mongoose": ">=3.6.x",
     "socket.io": "~0.9.16",
     "irc": "git://github.com/martynsmith/node-irc.git",
-    "moment": "~2.3.1"
+    "moment": "~2.3.1",
+    "credential": "~0.2.5"
   },
   "devDependencies": {
     "chai": "1.7.2",
