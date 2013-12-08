@@ -13,7 +13,16 @@ app = module.exports = express()
 # Load db stuff
 
 mongoose = require 'mongoose'
-mongoose.connect 'mongodb://localhost/shackles'
+tries = 0
+tryConnect = ->
+	mongoose.connect 'mongodb://localhost/shackles', (err) ->
+		if err?
+			tries++
+			log.error "can't connect to mongodb"
+			setTimeout tryConnect, Math.min(500 * Math.log(tries), 5000)
+tryConnect()
+mongoose.connection.once 'open', ->
+	 log.info 'got mongodb'
 # mongoose.set('debug', true)
 User = mongoose.model 'User', require('./schemas/User'), 'users'
 Unassigned = mongoose.model 'Unassigned', require('./schemas/Unassigned'), 'unassigned'

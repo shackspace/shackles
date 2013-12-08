@@ -31,6 +31,15 @@ module.exports = class RedisPubSub
 		@sub = redis.createClient 6379, 'glados.shack'
 		@pub = redis.createClient 6379, 'glados.shack'
 
+		onError = (err) ->
+			if err.message.indexOf 'ECONNREFUSED' > 0
+				log.warn "can't call glados"
+			else
+				log.err err.message
+
+		@sub.on 'error', onError
+		@pub.on 'error', onError
+
 		@sub.on 'subscribe', (channel, count) ->
 			log.info 'subscribe', channel, count
 
@@ -51,6 +60,5 @@ module.exports = class RedisPubSub
 							message = "#{online[..-2].join(', ')} and #{online[-1..]} are"
 						message +=  " currently #{onlineVerbs[Math.floor(Math.random()*onlineVerbs.length)]} in the shack."
 					@pub.publish '!bot', message
-				
 
 		@sub.subscribe "bot"
