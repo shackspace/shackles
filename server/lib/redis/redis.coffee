@@ -2,6 +2,7 @@ log4js = require 'log4js'
 log = log4js.getLogger 'redis-pubsub'
 redis = require 'redis'
 mediator = require '../mediator'
+config = require '../server_config'
 
 onlineVerbs = [
 	'procrastinating'
@@ -28,8 +29,8 @@ offlineMesgs = [
 module.exports = class RedisPubSub
 
 	constructor: ->
-		@sub = redis.createClient 6379, 'glados.shack'
-		@pub = redis.createClient 6379, 'glados.shack'
+		@sub = redis.createClient config.redis.port, config.redis.host
+		@pub = redis.createClient config.redis.port, config.redis.host
 
 		onError = (err) ->
 			if err.message.indexOf 'ECONNREFUSED' > 0
