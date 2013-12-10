@@ -2,7 +2,7 @@ log4js = require 'log4js'
 log = log4js.getLogger 'redis-pubsub'
 redis = require 'redis'
 mediator = require '../mediator'
-config = require '../server_config'
+config = require '../../server_config'
 
 onlineVerbs = [
 	'procrastinating'
