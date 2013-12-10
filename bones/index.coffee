@@ -27,7 +27,7 @@ tryId = (id) =>
 			url: serverUrl + '/api/id/' + id
 			method: 'GET'
 			json: true
-		, (error, response, body) ->
+		, (error, response, user) ->
 			if error?
 				console.log serverUrl + '/api/id/' + id
 				console.log error
@@ -36,17 +36,20 @@ tryId = (id) =>
 			else if response.statusCode is 404
 				boneDisplay.displayText 'No user found for   ' + id
 			else if response.statusCode is 200
-				action = 'login'
-				if body.activity? and body.activity[0]? and body.activity[0].action is 'login'
-					action = 'logout'
-				request
-					url: serverUrl + '/api/user/' + body._id + '/' + action
-					method: 'GET'
+				if user.latePasswortToken?
+					boneDisplay.displayText 'Here is the token to set your password: ', user.latePasswortToken
+				else
+					action = 'login'
+					if user.activity? and user.activity[0]? and user.activity[0].action is 'login'
+						action = 'logout'
+					request
+						url: serverUrl + '/api/user/' + user._id + '/' + action
+						method: 'GET'
 
-				if action is 'login'
-					boneDisplay.displayText greetingMessages[Math.floor(Math.random()*greetingMessages.length)].replace '$$', body._id
-				else if action is 'logout'
-					boneDisplay.displayText partingMessages[Math.floor(Math.random()*partingMessages.length)].replace '$$', body._id
+					if action is 'login'
+						boneDisplay.displayText greetingMessages[Math.floor(Math.random()*greetingMessages.length)].replace '$$', user._id
+					else if action is 'logout'
+						boneDisplay.displayText partingMessages[Math.floor(Math.random()*partingMessages.length)].replace '$$', user._id
 
 async.parallel [
 	(cb) -> rfidReader.open cb
