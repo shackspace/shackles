@@ -47,6 +47,7 @@ app.configure 'production', ->
 new (require('./controllers/User'))()
 new (require('./controllers/Unassigned'))()
 new (require('./controllers/timeout'))()
+new (require('./controllers/herald'))()
 
 
 new (require('./rest/User')) app
