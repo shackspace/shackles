@@ -17,19 +17,20 @@
     "test": "brunch test"
   },
   "dependencies": {
-    "javascript-brunch": ">= 1.0 < 1.8",
+    "clean-css-brunch": ">= 1.0 < 1.8",
     "coffee-script-brunch": ">= 1.0 < 1.8",
     "css-brunch": ">= 1.0 < 1.8",
-    "stylus-brunch": ">= 1.0 < 1.8",
-    "jade-brunch": ">= 1.0 < 1.8",
-    "uglify-js-brunch": ">= 1.0 < 1.8",
-    "clean-css-brunch": ">= 1.0 < 1.8",
     "express": "~ 3.3.0",
-    "log4js": "~0.6.6",
-    "mongoose": ">=3.6.x",
-    "socket.io": "~0.9.16",
     "irc": "git://github.com/martynsmith/node-irc.git",
-    "moment": "~2.3.1"
+    "jade-brunch": ">= 1.0 < 1.8",
+    "javascript-brunch": ">= 1.0 < 1.8",
+    "log4js": "~0.6.6",
+    "moment": "~2.3.1",
+    "mongoose": ">=3.6.x",
+    "shack-herald-client": "^0.0.3",
+    "socket.io": "~0.9.16",
+    "stylus-brunch": ">= 1.0 < 1.8",
+    "uglify-js-brunch": ">= 1.0 < 1.8"
   },
   "devDependencies": {
     "chai": "1.7.2",
