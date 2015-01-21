@@ -26,3 +26,11 @@ module.exports = class HeraldClientController
 				data:
 					action: 'login'
 					id: id
+
+		mediator.on 'user:loggedOut', (id) =>
+			@heraldClient.publish
+				content: "#{id} logged out"
+				from: 'shackles'
+				data:
+					action: 'logout'
+					id: id
