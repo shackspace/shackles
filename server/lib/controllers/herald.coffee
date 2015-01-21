@@ -13,13 +13,13 @@ module.exports = class HeraldClientController
 
 		@heraldClient = new HeraldClient config
 
-		@heraldClient.on 'error', (err) ->
+		@heraldClient.on 'error', (err) =>
 			log.error err
 
-		@heraldClient.on 'connected', ->
+		@heraldClient.on 'connected', =>
 			log.info 'connected to herald'
 
-		mediator.on 'user:loggedIn', (id) ->
+		mediator.on 'user:loggedIn', (id) =>
 			@heraldClient.publish
 				content: "#{id} logged in"
 				from: 'shackles'
