@@ -108,13 +108,13 @@ module.exports = class UserController
 	snmpLogin: (mac) =>
 		# don't use getByRfid, we dont want to list macs in the Unassigned list
 		macHash = hash mac
-		User.findOne {rfids: macHash}, {activity: 0}, (err, user) ->
+		User.findOne {rfids: macHash}, {activity: 0}, (err, user) =>
 			return unless user?
 			@login user._id
 
 	snmpLogout: (mac) =>
 		# don't use getByRfid, we dont want to list macs in the Unassigned list
 		macHash = hash mac
-		User.findOne {rfids: macHash}, {activity: 0}, (err, user) ->
+		User.findOne {rfids: macHash}, {activity: 0}, (err, user) =>
 			return unless user?
 			@logout user._id
