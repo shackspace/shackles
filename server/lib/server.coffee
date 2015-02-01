@@ -48,6 +48,7 @@ new (require('./controllers/User'))()
 new (require('./controllers/Unassigned'))()
 new (require('./controllers/timeout'))()
 new (require('./controllers/herald'))()
+new (require('./controllers/snmp'))()
 
 
 new (require('./rest/User')) app

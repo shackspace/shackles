@@ -20,7 +20,7 @@ session = new snmp.Session
 client = redis.createClient()
 
 update = ->
-	log.info 'polling snmp'
+	log.debug 'polling snmp'
 	session.getSubtree
 		oid: oid
 	, (err, varbinds) ->
@@ -39,25 +39,24 @@ update = ->
 			# add all current macs to a fresh set
 			for varbind in varbinds
 				mac = macAddress.toString(varbind.valueRaw)
-				client.sadd logKey, varbind.value
+				# log.debug mac
+				client.sadd logKey, mac
 			
-			# get the diff
-			client.sdiff logKey, preLogKey, (err, diff) ->
-				log.debug 'different macs:', diff.length
-				async.each diff, (mac, cb) ->
-					humanMac = macAddress.toString(new Buffer(mac))
-					# check if old or new mac
-					client.sismember preLogKey, mac, (err, isMember) ->
-						log.info err,isMember
-						if isMember
-							# obsolete mac
-							log.info 'device left:', humanMac
-						else
-							log.info 'device joined:', humanMac
-						cb()
-				, (err) ->
-					log.error err if err?
-					setTimeout update, 10000
+
+			async.parallel [
+				(cb) ->
+					client.sdiff logKey, preLogKey, (err, diff) ->
+						for mac in diff
+							log.info 'device joined:', mac
+						cb err
+			,
+				(cb) ->
+					client.sdiff preLogKey, logKey, (err, diff) ->
+						for mac in diff
+							log.info 'device left:', mac
+						cb err
+			], (err) ->
+				setTimeout update, 10000
 
 
 				# if ret is 1
