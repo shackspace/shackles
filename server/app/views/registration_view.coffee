@@ -23,7 +23,7 @@ module.exports = class RegistrationView extends View
 		$button = $ '#device-mac'
 		if mac?
 			$button.prop 'disabled', false
-			$button.text "User your devices MAC (#{mac.MAC})"
+			$button.text "Use your devices MAC (#{mac.MAC})"
 			@deviceMac = mac
 		else
 			$button.text 'could not locate your device'
