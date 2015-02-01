@@ -87,23 +87,23 @@ module.exports = class UserController
 		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'login'}}, status: 'logged in'}, (err, numAffected) ->
 			if err?
 				console.log err
-				cb err
+				cb? err
 			else if numAffected is 1
 				mediator.emit 'user:loggedIn', id
-				cb()
+				cb?()
 			else
-				cb 404
+				cb? 404
 
 	logout: (id, cb) =>
 		User.update {_id: id}, {$push :{activity: {date: Date.now(), action: 'logout'}}, status: 'logged out'}, (err, numAffected) ->
 			if err?
 				console.log err
-				cb err
+				cb? err
 			else if numAffected is 1
 				mediator.emit 'user:loggedOut', id
-				cb()
+				cb?()
 			else
-				cb 404
+				cb? 404
 
 	snmpLogin: (mac) =>
 		# don't use getByRfid, we dont want to list macs in the Unassigned list
