@@ -63,6 +63,10 @@ module.exports = class UserController
 
 	# resolve rfid to user
 	getByRfid: (rfid, cb) =>
+		#hack to block old mac monitor
+		if rfid.indexOf(':') is 2
+			cb 404
+			return
 		rfidHash = hash rfid
 		User.findOne {rfids: rfidHash}, {activity: {$slice: -1}}, (err, user) ->
 			# TODO err
