@@ -9,15 +9,25 @@ module.exports = class RegistrationView extends View
 
 	events:
 		'submit form' : 'submit'
+		'click #device-mac': 'useDeviceMac'
 
 	initialize: ->
 		super
-
 		@subview 'unassigned', new UnnassignedCollectionView
 			collection: @collection
 
 		@subscribeEvent 'registration:selectedUnassigned', (rfid) ->
 			@$('#rfid').val rfid
+
+	showMac: (mac) =>
+		$button = $ '#device-mac'
+		if mac?
+			$button.prop 'disabled', false
+			$button.text "User your devices MAC (#{mac.MAC})"
+			@deviceMac = mac
+		else
+			$button.text 'could not locate your device'
+		
 
 	render: ->
 		super
@@ -30,6 +40,11 @@ module.exports = class RegistrationView extends View
 			username: @$('#username').val()
 			rfid: @$('#rfid').val()
 		return
+
+	useDeviceMac: (event) =>
+		event.preventDefault()
+		@$('#rfid').val @deviceMac.MAC
+
 
 	showSuccess: =>
 		@$('#registration-form').hide()

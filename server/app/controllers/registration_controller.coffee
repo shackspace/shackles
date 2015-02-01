@@ -19,6 +19,9 @@ module.exports = class RegistrationController extends Controller
 		@view = new RegistrationView
 			collection: unassignedIds
 
+		$.getJSON '/api/my-mac', {}, (mac) =>
+			@view.showMac mac
+
 		@subscribeEvent 'registration:register', (user) =>
 			mediator.publish '!io:emit', "!user:register",
 				username: user.username

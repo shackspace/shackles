@@ -10,7 +10,9 @@ include mixins/form_helpers
 				.col-lg-10.col-lg-offset-2
 					button.btn.btn-primary.btn-lg.btn-block(type='submit') Register
 
-	.col-lg-6
+	#possible-ids.col-lg-6
+		button#device-mac.btn.btn-info.btn-lg.btn-block(type='button', disabled="disabled") Getting YOUR MAC address …
+		hr
 		h4(style='margin: 30px 0 20px') Last Unregistered Accesses
 		.well#unassigned
 

@@ -23,6 +23,8 @@ module.exports = class SNMPController
 
 		@client = redis.createClient config.redis.port, config.redis.host
 
+		mediator.on '!snmp:get-mac-from-ip', @getMacFromIp
+
 		@update()
 
 	update: =>
@@ -64,3 +66,18 @@ module.exports = class SNMPController
 							cb err
 				], (err) ->
 					setTimeout @update, 10000
+
+	getMacFromIp: (ip, cb) =>
+		@session.getSubtree
+			oid: @options.oid
+		, (err, varbinds) =>
+			return cb err if err?
+			for varbind in varbinds
+				varIp = varbind.oid[12..].join '.'
+				if ip is varIp
+					mac = macAddress.toString varbind.valueRaw
+					log.info 'mac found for ip:', ip, mac
+					cb null, mac
+					return	
+			log.info 'no mac found for ip:', ip
+			cb null, null

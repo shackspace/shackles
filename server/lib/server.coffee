@@ -53,6 +53,8 @@ new (require('./controllers/snmp'))()
 
 new (require('./rest/User')) app
 new (require('./rest/Unassigned')) app
+new (require('./rest/Snmp')) app
+
 
 
 # dont use the redis connector on unit tests
