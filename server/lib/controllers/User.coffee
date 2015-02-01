@@ -19,6 +19,8 @@ module.exports = class UserController
 		mediator.on '!user:getByRfid', @getByRfid
 		mediator.on '!user:login', @login
 		mediator.on '!user:logout', @logout
+		mediator.on 'snmp:device-joined', @snmpLogin
+		mediator.on 'snmp:device-left', @snmpLogout
 
 	list: (query, projection, options, cb) =>
 		args = Array.prototype.slice.call arguments
@@ -98,3 +100,17 @@ module.exports = class UserController
 				cb()
 			else
 				cb 404
+
+	snmpLogin: (mac) =>
+		# don't use getByRfid, we dont want to list macs in the Unassigned list
+		macHash = hash mac
+		User.findOne {rfids: macHash}, {activity: 0}, (err, user) ->
+			return unless user?
+			@login user._id
+
+	snmpLogout: (mac) =>
+		# don't use getByRfid, we dont want to list macs in the Unassigned list
+		macHash = hash mac
+		User.findOne {rfids: macHash}, {activity: 0}, (err, user) ->
+			return unless user?
+			@logout user._id
