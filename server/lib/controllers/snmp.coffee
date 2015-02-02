@@ -26,6 +26,7 @@ module.exports = class SNMPController
 		mediator.on '!snmp:get-mac-from-ip', @getMacFromIp
 
 		@update()
+		setInterval @update, 15000
 
 	update: =>
 		log.debug 'polling snmp'
@@ -65,7 +66,7 @@ module.exports = class SNMPController
 								mediator.emit 'snmp:device-left', mac
 							cb err
 				], (err) ->
-					setTimeout @update, 10000
+					log.error err if err?
 
 	getMacFromIp: (ip, cb) =>
 		@session.getSubtree
