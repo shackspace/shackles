@@ -62,7 +62,6 @@ module.exports = class UserController
 	
 	online: (cb) =>
 		@list {status: 'logged in'}, (err, users) =>
-			log.debug users
 			online = []
 			for user in users
 				online.push user._id

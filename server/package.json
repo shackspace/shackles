@@ -23,7 +23,6 @@
     "css-brunch": ">= 1.0 < 1.8",
     "express": "~ 3.3.0",
     "hiredis": "^0.1.17",
-    "irc": "git://github.com/martynsmith/node-irc.git",
     "jade-brunch": ">= 1.0 < 1.8",
     "javascript-brunch": ">= 1.0 < 1.8",
     "log4js": "~0.6.6",
