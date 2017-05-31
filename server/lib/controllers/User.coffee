@@ -9,11 +9,34 @@ crypto = require 'crypto'
 
 hash = (text) -> crypto.createHash('md5').update(text).digest 'hex'
 
+onlineVerbs = [
+	'procrastinating'
+	'sitting'
+	'working'
+	'hacking'
+	'sleeping'
+	'dancing'
+	'building weapons of mass destruction'
+	'rocking'
+	'plotting your demise'
+	'preparing for the zombie apocalypse'
+	'planning world domination'
+]
+
+offlineMesgs = [
+	'No one is home.'
+	'The shack is deserted.'
+	'No one in the shack wants to be surveilled.'
+	'There is nothing to see here, carry on.'
+	'The kitchen is the only living thing in the shack.'
+]
+
 module.exports = class UserController
 
 	constructor: ->
 		mediator.on '!user:list', @list
 		mediator.on '!user:get', @item
+		mediator.on '!user:online', @online
 
 		mediator.on '!user:register', @register
 		mediator.on '!user:getByRfid', @getByRfid
@@ -36,6 +59,25 @@ module.exports = class UserController
 		User.findById id, (err, user) ->
 			console.log err if err?
 			cb err, user
+	
+	online: (cb) =>
+		@list {status: 'logged in'}, (err, users) =>
+			log.debug users
+			online = []
+			for user in users
+				online.push user._id
+			
+			if online.length is 0
+				message = offlineMesgs[Math.floor(Math.random()*offlineMesgs.length)]
+			else
+				if online.length is 1
+					message = online[0] + ' is'
+				else
+					message = "#{online[..-2].join(', ')} and #{online[-1..]} are"
+				message +=  " currently #{onlineVerbs[Math.floor(Math.random()*onlineVerbs.length)]} in the shack."
+			cb null,
+				message: message
+				users: online
 
 	register: (register, cb) =>
 		# register should be username, rfid

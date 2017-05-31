@@ -6,6 +6,7 @@ module.exports = class UserRouter
 	constructor: (app) ->
 		app.get "/api/#{@prefix}", @list
 		app.get "/api/#{@prefix}/:id", @item
+		app.get "/api/online", @online
 
 		app.post "/api/user", @register
 		app.get "/api/id/:id", @getByRfid
@@ -25,6 +26,13 @@ module.exports = class UserRouter
 		mediator.emit '!user:get', req.params.id, (err, user) ->
 			if user?
 				res.json user
+			else
+				res.json 404, null
+	
+	online: (req, res) =>
+		mediator.emit '!user:online', (err, result) ->
+			if result?
+				res.json result
 			else
 				res.json 404, null
 
